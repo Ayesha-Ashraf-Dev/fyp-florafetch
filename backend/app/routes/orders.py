@@ -45,33 +45,64 @@ async def create_order_endpoint(
     db: AsyncSession = Depends(get_db),
 ):
     """Create a new order from cart."""
-    # Get user's cart - this returns a dictionary
+    # DEBUG: Log the user ID
+    print(f"Creating order for user_id: {current_user['user_id']}")
+    
+    # Get user's cart
     cart = await get_cart(db, current_user["user_id"])
     
-    # Check if cart exists and has items
-    if not cart or not cart.get('items') or len(cart.get('items', [])) == 0:
+    # DEBUG: Log the cart
+    print(f"Cart type: {type(cart)}")
+    print(f"Cart content: {cart}")
+    
+    # Check if cart exists
+    if not cart:
+        print("Cart is None!")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cart not found",
+        )
+    
+    # Get cart items - cart is a dictionary from get_cart
+    cart_items = cart.get('items', [])
+    total_price = cart.get('total_price', 0)
+    
+    # DEBUG: Log items
+    print(f"Cart items count: {len(cart_items)}")
+    print(f"Cart items: {cart_items}")
+    print(f"Total price: {total_price}")
+    
+    # Check if cart has items
+    if not cart_items or len(cart_items) == 0:
+        print("Cart items is empty!")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Cart is empty",
         )
-    
-    # Get cart items from the dictionary
-    cart_items = cart.get('items', [])
-    total_price = cart.get('total_price', 0)
 
     # Verify address belongs to user
     address = await get_address(db, order_data.address_id)
     if not address or address.user_id != current_user["user_id"]:
+        print(f"Address not found or doesn't belong to user. Address: {address}, User: {current_user['user_id']}")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid address",
         )
 
+    print("Creating order...")
+    
     # Create order - pass the cart items (dictionaries)
-    db_order = await create_order(db, current_user["user_id"], cart_items, total_price, order_data)
+    db_order = await create_order(
+        db, 
+        current_user["user_id"], 
+        cart_items,  # These are dictionaries
+        total_price, 
+        order_data
+    )
 
     # Clear cart
     await clear_cart(db, current_user["user_id"])
+    print(f"Order created successfully: {db_order.id}")
 
     return db_order
 
