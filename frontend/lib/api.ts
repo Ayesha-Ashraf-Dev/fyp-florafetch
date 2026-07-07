@@ -319,12 +319,17 @@ class ApiClient {
     await this.handleResponse(response);
   }
 
-  // Orders
+  // Order
   async createOrder(addressId: string, paymentMethod: string): Promise<Order> {
     const response = await fetch(`${API_URL}/api/orders`, {
       method: "POST",
       headers: this.getHeaders(true),
-      body: JSON.stringify({ address_id: parseInt(addressId), payment_method: paymentMethod }),
+      body: JSON.stringify({
+        address_id: parseInt(addressId),
+        payment_method: paymentMethod,
+        delivery_date: null, // Add this
+        special_instructions: null // Add this
+      }),
     });
     const data = await this.handleResponse(response);
     return this.normalizeOrder(data);

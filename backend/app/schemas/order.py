@@ -18,6 +18,7 @@ class OrderCreate(BaseModel):
     address_id: int
     delivery_date: Optional[datetime] = None
     special_instructions: Optional[str] = None
+    payment_method: Optional[str] = "cod"
 
 
 class OrderResponse(BaseModel):
