@@ -1,11 +1,10 @@
+# backend/app/core/config.py
+import os
 from pathlib import Path
-
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# Resolve .env relative to backend/ so it loads regardless of cwd
 _BACKEND_DIR = Path(__file__).resolve().parent.parent.parent
 _ENV_FILE = _BACKEND_DIR / ".env"
-
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -14,35 +13,31 @@ class Settings(BaseSettings):
         case_sensitive=False,
         extra="ignore",
     )
-    # Database settings
-    database_url: str
-    test_database_url: str = ""
-
-    # SECURITY
-    secret_key: str
-    access_token_expire_minutes: int = 30
-    refresh_token_expire_days: int = 7
-
-    # CORS
-    cors_origins: str = "http://localhost:3000"
-
-    @property
-    def cors_origins_list(self) -> list[str]:
-        """Parse comma-separated CORS origins into a list."""
-        if isinstance(self.cors_origins, list):
-            return self.cors_origins
-        return [origin.strip() for origin in self.cors_origins.split(",")]
-
-    # REDIS
-    redis_url: str = "redis://localhost:6379/0"
     
-    # Cloudinary image storage
-    cloudinary_cloud_name: str = ""
-    cloudinary_api_key: str = ""
-    cloudinary_api_secret: str = ""
+    database_url: str = ""  # Will be set from environment
     
-    # EMAIL (optional)
-    sendgrid_api_key: str = ""
-    from_email: str = "noreply@florafetch.com"
+    # ... other settings ...
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # If database_url is not set, try alternative variables
+        if not self.database_url:
+            for var in ["DATABASE_URL", "POSTGRES_URL", "STORAGE_URL"]:
+                url = os.getenv(var)
+                if url:
+                    self.database_url = url
+                    break
+        
+        # Convert to asyncpg format if needed
+        if self.database_url and self.database_url.startswith("postgres://"):
+            self.database_url = self.database_url.replace("postgres://", "postgresql+asyncpg://")
+        
+        # Ensure SSL for Neon
+        if self.database_url and "neon.tech" in self.database_url:
+            if "sslmode" not in self.database_url:
+                if "?" in self.database_url:
+                    self.database_url += "&sslmode=require"
+                else:
+                    self.database_url += "?sslmode=require"
 
 settings = Settings()

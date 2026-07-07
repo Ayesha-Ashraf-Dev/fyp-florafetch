@@ -81,7 +81,37 @@ async def root():
         "docs": "/docs",
     }
 
-
+@app.get("/db-test")
+async def test_db_connection():
+    """Test database connectivity."""
+    try:
+        from app.core.database import AsyncSessionLocal
+        from sqlalchemy import text
+        
+        async with AsyncSessionLocal() as session:
+            # Test connection
+            result = await session.execute(text("SELECT version()"))
+            version = result.scalar()
+            
+            # Test table existence
+            tables = await session.execute(text(
+                "SELECT table_name FROM information_schema.tables "
+                "WHERE table_schema = 'public'"
+            ))
+            table_names = [row[0] for row in tables.fetchall()]
+            
+            return {
+                "status": "connected",
+                "version": version,
+                "tables": table_names[:10],  # Show first 10 tables
+                "database_url_prefix": settings.database_url[:30] + "..."
+            }
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e),
+            "error_type": type(e).__name__
+        }
 @app.get("/health")
 async def health_check():
     """Health check endpoint."""
