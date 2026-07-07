@@ -87,6 +87,18 @@ async def health_check():
     """Health check endpoint."""
     return {"status": "healthy"}
 
+@app.get("/routes")
+async def list_routes():
+    """List all registered routes for debugging."""
+    routes = []
+    for route in app.routes:
+        routes.append({
+            "path": route.path,
+            "name": route.name,
+            "methods": list(route.methods) if hasattr(route, 'methods') else []
+        })
+    return {"routes": routes}
+
 
 if __name__ == "__main__":
     import uvicorn
