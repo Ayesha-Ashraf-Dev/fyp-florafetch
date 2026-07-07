@@ -1,6 +1,2 @@
-[project]
-name = "florafetch"
-version = "1.0.0"
-
 [tool.vercel]
-entrypoint = "backend/main:app"
+entrypoint = "main:app"
