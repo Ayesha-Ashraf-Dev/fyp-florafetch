@@ -8,7 +8,7 @@ from app.utils.helpers import generate_order_number
 
 
 async def get_order(db: AsyncSession, order_id: int) -> Order:
-    """Get order by ID."""
+    """Get order by ID with items eagerly loaded."""
     result = await db.execute(
         select(Order)
         .where(Order.id == order_id)
@@ -50,7 +50,7 @@ async def get_user_orders(db: AsyncSession, user_id: int, skip: int = 0, limit: 
 async def create_order(
     db: AsyncSession,
     user_id: int,
-    cart_items: list,  # This is a list of dictionaries
+    cart_items: list,
     total_price: float,
     order_data: OrderCreate
 ) -> Order:
@@ -94,9 +94,7 @@ async def create_order(
 
     await db.commit()
     await db.refresh(db_order)
-    
-    # Reload with relationships
-    return await get_order(db, db_order.id)
+    return db_order
 
 async def create_order(
     db: AsyncSession,

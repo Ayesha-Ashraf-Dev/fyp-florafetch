@@ -1,3 +1,6 @@
+import traceback
+from venv import logger
+
 from fastapi import APIRouter, HTTPException, Depends, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
@@ -38,6 +41,8 @@ async def get_orders(
     
     return orders
 
+# In app/routes/orders.py or app/api/orders.py
+
 @router.post("", response_model=OrderResponse, status_code=status.HTTP_201_CREATED)
 async def create_order_endpoint(
     order_data: OrderCreate,
@@ -45,67 +50,67 @@ async def create_order_endpoint(
     db: AsyncSession = Depends(get_db),
 ):
     """Create a new order from cart."""
-    # DEBUG: Log the user ID
-    print(f"Creating order for user_id: {current_user['user_id']}")
-    
-    # Get user's cart
-    cart = await get_cart(db, current_user["user_id"])
-    
-    # DEBUG: Log the cart
-    print(f"Cart type: {type(cart)}")
-    print(f"Cart content: {cart}")
-    
-    # Check if cart exists
-    if not cart:
-        print("Cart is None!")
+    try:
+        logger.info(f"Creating order for user_id: {current_user['user_id']}")
+        
+        # Get user's cart
+        cart = await get_cart(db, current_user["user_id"])
+        
+        if not cart:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cart not found",
+            )
+        
+        # Get cart items
+        cart_items = cart.get('items', [])
+        total_price = cart.get('total_price', 0)
+        
+        if not cart_items or len(cart_items) == 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cart is empty",
+            )
+        
+        # Verify address belongs to user
+        address = await get_address(db, order_data.address_id)
+        if not address or address.user_id != current_user["user_id"]:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid address",
+            )
+        
+        # ========== FIX STARTS HERE ==========
+        # Step 1: Create the order
+        db_order = await create_order(
+            db, 
+            current_user["user_id"], 
+            cart_items, 
+            total_price, 
+            order_data
+        )
+        
+        # Step 2: Clear the cart
+        await clear_cart(db, current_user["user_id"])
+        
+        # Step 3: Load the order with relationships (eager loading)
+        # This prevents the MissingGreenlet error when serializing
+        loaded_order = await get_order(db, db_order.id)
+        
+        # Step 4: Return the loaded order
+        return loaded_order
+        # ========== FIX ENDS HERE ==========
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error creating order: {str(e)}")
+        logger.error(traceback.format_exc())
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Cart not found",
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error creating order: {str(e)}"
         )
     
-    # Get cart items - cart is a dictionary from get_cart
-    cart_items = cart.get('items', [])
-    total_price = cart.get('total_price', 0)
-    
-    # DEBUG: Log items
-    print(f"Cart items count: {len(cart_items)}")
-    print(f"Cart items: {cart_items}")
-    print(f"Total price: {total_price}")
-    
-    # Check if cart has items
-    if not cart_items or len(cart_items) == 0:
-        print("Cart items is empty!")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Cart is empty",
-        )
-
-    # Verify address belongs to user
-    address = await get_address(db, order_data.address_id)
-    if not address or address.user_id != current_user["user_id"]:
-        print(f"Address not found or doesn't belong to user. Address: {address}, User: {current_user['user_id']}")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid address",
-        )
-
-    print("Creating order...")
-    
-    # Create order - pass the cart items (dictionaries)
-    db_order = await create_order(
-        db, 
-        current_user["user_id"], 
-        cart_items,  # These are dictionaries
-        total_price, 
-        order_data
-    )
-
-    # Clear cart
-    await clear_cart(db, current_user["user_id"])
-    print(f"Order created successfully: {db_order.id}")
-
-    return db_order
-
 @router.get("/{identifier}", response_model=OrderResponse)
 async def get_order_endpoint(
     identifier: str,
