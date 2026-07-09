@@ -156,3 +156,43 @@ input, textarea, select {
     print-color-adjust: exact;
   }
 }
+/* Add this to your global CSS or the <style jsx> block */
+
+/* Mobile responsive for hero section */
+@media (max-width: 767px) {
+  /* Stack the hero section vertically on mobile */
+  .hero-section {
+    grid-template-columns: 1fr !important;
+    min-height: auto !important;
+  }
+  
+  /* Reorder: image first, then text */
+  .hero-image {
+    order: -1 !important;
+    min-height: 300px !important;
+  }
+  
+  .hero-text {
+    padding-top: 30px !important;
+    padding-bottom: 50px !important;
+  }
+  
+  /* Adjust stats for mobile */
+  .hero-stats {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 20px !important;
+  }
+  
+  /* Hide the last stat on very small screens or make it span */
+  .hero-stats-item:last-child {
+    grid-column: 1 / -1 !important;
+    text-align: center !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Tablet adjustments */
+  .hero-section {
+    min-height: auto !important;
+  }
+}

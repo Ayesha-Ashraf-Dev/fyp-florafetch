@@ -16,187 +16,184 @@ export default function Home() {
   return (
     <div style={{ background: "var(--color-cream)", minHeight: "100vh" }}>
 
-      {/* ── Hero Section ── */}
-      <section style={{
-        display: "grid",
-        gridTemplateColumns: "1fr 1fr",
-        minHeight: "92vh",
-        overflow: "hidden",
-      }} className="flex-col md:grid">
-        {/* Left: copy */}
-        <div style={{
-          padding: "clamp(40px, 8vw, 100px) clamp(20px, 5vw, 64px)",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          background: "var(--color-cream)",
-        }}>
+  {/* ── Hero Section ── */}
+<section style={{
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  minHeight: "92vh",
+  overflow: "hidden",
+}}>
+  {/* Left: copy */}
+  <div style={{
+    padding: "clamp(40px, 8vw, 100px) clamp(20px, 5vw, 64px)",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    background: "var(--color-cream)",
+  }}>
+    <p style={{
+      fontFamily: "var(--font-plus-jakarta, sans-serif)",
+      fontSize: "11px",
+      fontWeight: "600",
+      letterSpacing: "0.18em",
+      textTransform: "uppercase",
+      color: "var(--color-terracotta)",
+      marginBottom: "24px",
+    }}>
+      Botanical Marketplace · Est. 2024
+    </p>
+    <h1 style={{
+      fontFamily: "var(--font-playfair, 'Playfair Display', serif)",
+      fontSize: "clamp(32px, 6vw, 72px)",
+      fontWeight: "600",
+      lineHeight: 1.1,
+      color: "var(--color-forest)",
+      marginBottom: "28px",
+      letterSpacing: "-0.02em",
+    }}>
+      Bring the<br />
+      <em style={{ fontStyle: "italic", color: "var(--color-forest-muted)" }}>living</em><br />
+      world inside
+    </h1>
+    <p style={{
+      fontSize: "clamp(14px, 2vw, 17px)",
+      color: "var(--color-text-muted)",
+      maxWidth: "420px",
+      lineHeight: 1.7,
+      marginBottom: "40px",
+    }}>
+      A curated collection of rare indoor plants, succulents, and florals — each one thoughtfully sourced and ready to transform your space.
+    </p>
+    <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+      <Link href={isLoggedIn ? "/shop" : "/login"} style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "8px",
+        background: "var(--color-forest)",
+        color: "var(--color-cream)",
+        padding: "14px 32px",
+        borderRadius: "4px",
+        fontSize: "13px",
+        fontWeight: "600",
+        textDecoration: "none",
+        letterSpacing: "0.04em",
+        textTransform: "uppercase",
+        transition: "background 0.25s",
+      }}
+        onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "var(--color-forest-muted)"}
+        onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "var(--color-forest)"}
+      >
+        <FiShoppingBag />
+        Shop the Collection
+      </Link>
+      <Link href="/community" style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "8px",
+        background: "transparent",
+        color: "var(--color-forest)",
+        padding: "14px 32px",
+        borderRadius: "4px",
+        fontSize: "13px",
+        fontWeight: "600",
+        textDecoration: "none",
+        letterSpacing: "0.04em",
+        textTransform: "uppercase",
+        border: "1px solid var(--color-sand-dark)",
+        transition: "all 0.2s",
+      }}>
+        <FiUsers />
+        Community
+      </Link>
+    </div>
+    {/* Stats row */}
+    <div style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(3, 1fr)",
+      gap: "32px",
+      marginTop: "64px",
+      paddingTop: "40px",
+      borderTop: "1px solid var(--color-sand)",
+    }}>
+      {[
+        { num: "2,400+", label: "Plants Delivered" },
+        { num: "140+", label: "Species Available" },
+        { num: "4.9★", label: "Customer Rating" },
+      ].map((s) => (
+        <div key={s.label}>
           <p style={{
-            fontFamily: "var(--font-plus-jakarta, sans-serif)",
-            fontSize: "11px",
+            fontFamily: "var(--font-playfair, serif)",
+            fontSize: "clamp(20px, 3vw, 28px)",
             fontWeight: "600",
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-            color: "var(--color-terracotta)",
-            marginBottom: "24px",
-          }}>
-            Botanical Marketplace · Est. 2024
-          </p>
-          <h1 style={{
-            fontFamily: "var(--font-playfair, 'Playfair Display', serif)",
-            fontSize: "clamp(32px, 6vw, 72px)",
-            fontWeight: "600",
-            lineHeight: 1.1,
             color: "var(--color-forest)",
-            marginBottom: "28px",
-            letterSpacing: "-0.02em",
-          }}>
-            Bring the<br />
-            <em style={{ fontStyle: "italic", color: "var(--color-forest-muted)" }}>living</em><br />
-            world inside
-          </h1>
-          <p style={{
-            fontSize: "clamp(14px, 2vw, 17px)",
-            color: "var(--color-text-muted)",
-            maxWidth: "420px",
-            lineHeight: 1.7,
-            marginBottom: "40px",
-          }}>
-            A curated collection of rare indoor plants, succulents, and florals — each one thoughtfully sourced and ready to transform your space.
-          </p>
-          <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
-            <Link href={isLoggedIn ? "/shop" : "/login"} style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              background: "var(--color-forest)",
-              color: "var(--color-cream)",
-              padding: "14px 32px",
-              borderRadius: "4px",
-              fontSize: "13px",
-              fontWeight: "600",
-              textDecoration: "none",
-              letterSpacing: "0.04em",
-              textTransform: "uppercase",
-              transition: "background 0.25s",
-            }}
-              onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "var(--color-forest-muted)"}
-              onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "var(--color-forest)"}
-            >
-              <FiShoppingBag />
-              Shop the Collection
-            </Link>
-            <Link href="/community" style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              background: "transparent",
-              color: "var(--color-forest)",
-              padding: "14px 32px",
-              borderRadius: "4px",
-              fontSize: "13px",
-              fontWeight: "600",
-              textDecoration: "none",
-              letterSpacing: "0.04em",
-              textTransform: "uppercase",
-              border: "1px solid var(--color-sand-dark)",
-              transition: "all 0.2s",
-            }}>
-              <FiUsers />
-              Community
-            </Link>
-          </div>
-          {/* Stats row */}
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "32px",
-            marginTop: "64px",
-            paddingTop: "40px",
-            borderTop: "1px solid var(--color-sand)",
-          }}>
-            {[
-              { num: "2,400+", label: "Plants Delivered" },
-              { num: "140+", label: "Species Available" },
-              { num: "4.9★", label: "Customer Rating" },
-            ].map((s) => (
-              <div key={s.label}>
-                <p style={{
-                  fontFamily: "var(--font-playfair, serif)",
-                  fontSize: "clamp(20px, 3vw, 28px)",
-                  fontWeight: "600",
-                  color: "var(--color-forest)",
-                  lineHeight: 1,
-                }}>{s.num}</p>
-                <p style={{ fontSize: "12px", color: "var(--color-text-muted)", marginTop: "4px" }}>{s.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Right: botanical art */}
-        <div style={{
-          background: "var(--color-sage-pale)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          position: "relative",
-          overflow: "hidden",
-          minHeight: "400px",
-          padding: "40px",
-        }}>
-          {/* Decorative circles */}
-          <div style={{
-            position: "absolute",
-            top: "-60px",
-            right: "-60px",
-            width: "280px",
-            height: "280px",
-            borderRadius: "50%",
-            background: "var(--color-sand)",
-            opacity: 0.5,
-          }} />
-          <div style={{
-            position: "absolute",
-            bottom: "-80px",
-            left: "-80px",
-            width: "320px",
-            height: "320px",
-            borderRadius: "50%",
-            background: "var(--color-terracotta-pale)",
-            opacity: 0.4,
-          }} />
-          {/* <div style={{
-            position: "relative",
-            zIndex: 1,
-            fontSize: "clamp(80px, 15vw, 160px)",
             lineHeight: 1,
-          }}> */}
-     <Image
-            src="/icon.png"
-            alt="FloraFetch Logo"
-            width={460}
-            height={160}
-            style={{
-              objectFit: "contain",
-            }}
-          />
-          {/* </div> */}
-     
-          <p style={{
-            fontSize: "16px",
-            textAlign: "center",
-            color: "var(--color-forest)",
-            marginTop: "32px",
-            fontWeight: "500",
-            maxWidth: "280px",
-          }}>
-            Premium plants delivered to your doorstep
-          </p>
+          }}>{s.num}</p>
+          <p style={{ fontSize: "12px", color: "var(--color-text-muted)", marginTop: "4px" }}>{s.label}</p>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
 
+  {/* Right: botanical art */}
+  <div style={{
+    background: "var(--color-sage-pale)",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+    overflow: "hidden",
+    minHeight: "400px",
+    padding: "40px",
+  }}>
+    {/* Decorative circles */}
+    <div style={{
+      position: "absolute",
+      top: "-60px",
+      right: "-60px",
+      width: "280px",
+      height: "280px",
+      borderRadius: "50%",
+      background: "var(--color-sand)",
+      opacity: 0.5,
+    }} />
+    <div style={{
+      position: "absolute",
+      bottom: "-80px",
+      left: "-80px",
+      width: "320px",
+      height: "320px",
+      borderRadius: "50%",
+      background: "var(--color-terracotta-pale)",
+      opacity: 0.4,
+    }} />
+    
+    <Image
+      src="/icon.png"
+      alt="FloraFetch Logo"
+      width={460}
+      height={160}
+      style={{
+        objectFit: "contain",
+        position: "relative",
+        zIndex: 1,
+      }}
+    />
+   
+    <p style={{
+      fontSize: "16px",
+      textAlign: "center",
+      color: "var(--color-forest)",
+      marginTop: "32px",
+      fontWeight: "500",
+      maxWidth: "280px",
+      position: "relative",
+      zIndex: 1,
+    }}>
+      Premium plants delivered to your doorstep
+    </p>
+  </div>
+</section>
       {/* ── Features Section ── */}
       <section style={{ padding: "clamp(40px, 8vw, 80px) 20px", background: "white", borderBottom: "1px solid var(--color-sand)" }}>
         <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
