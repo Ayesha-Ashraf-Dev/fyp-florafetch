@@ -1,3 +1,114 @@
+# Final Year Project
+
+## Prerequisites
+
+Make sure the following are installed:
+
+- Node.js (v18 or later recommended)
+- Python 3.10+ (or your required version)
+- npm (comes with Node.js)
+
+---
+
+## Project Structure
+
+```
+project/
+├── frontend/
+├── backend/
+└── README.md
+```
+
+---
+
+## Frontend Setup
+
+1. Open a terminal in the `frontend` folder.
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Start the development server:
+
+```bash
+npm run dev
+```
+
+The frontend will be available at:
+
+```
+http://localhost:3000
+```
+
+---
+
+## Backend Setup
+
+1. Open a terminal in the `backend` folder.
+
+2. (Optional) Create a virtual environment:
+
+### Windows
+
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+### macOS/Linux
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+3. Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+4. Start the backend server:
+
+```bash
+python app.py
+```
+
+(or replace `app.py` with your project's entry file if different)
+
+---
+
+## Notes
+
+- `node_modules` has been intentionally excluded to reduce project size.
+- After running `npm install`, all required frontend dependencies will be downloaded automatically.
+- If a Python virtual environment (`venv`) is not included, simply create one using the steps above before installing the requirements.
+
+---
+
+## Environment Variables
+
+If your project uses environment variables, create the required `.env` files before running the project.
+
+Example:
+
+```
+frontend/.env.local
+backend/.env
+```
+
+Fill them with the required configuration values.
+
+---
+
+## Submission Note
+
+This project was shared through Google Drive because the university submission portal was unable to accept the ZIP archive due to its size. All generated folders such as `node_modules`, `.next`, `venv`, and `__pycache__` have been excluded intentionally and can be regenerated using the installation commands provided above.
+
+
 # FloraFetch - Online Plant Store Platform
 
 A complete web-based platform for online sale and distribution of plant species with real-time inventory tracking, detailed care guides, and efficient order fulfillment.
